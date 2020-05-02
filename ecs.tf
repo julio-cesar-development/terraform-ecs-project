@@ -1,9 +1,9 @@
 resource "aws_ecs_cluster" "app-cluster" {
-  name = "app-cluster"
+  name = var.cluster_name
 }
 
 # data "template_file" "ecs-definition" {
-#   template = "${file("${path.module}/definition.json")}"
+#   template = file("${path.module}/definition.json")
 
 #   vars {
 #     test = "${test}"
@@ -12,6 +12,8 @@ resource "aws_ecs_cluster" "app-cluster" {
 
 resource "aws_ecs_task_definition" "app-definition" {
   family                = "app-definition"
+  # special role to execute ECS
+  execution_role_arn    = "arn:aws:iam::829560024531:role/AmazonECSTaskExecutionRole"
   container_definitions = <<DEFINITION
 [
   {
@@ -19,17 +21,14 @@ resource "aws_ecs_task_definition" "app-definition" {
     "logConfiguration": null,
     "entryPoint": null,
     "portMappings": [{
-      "hostPort": 0,
+      "hostPort": 80,
       "protocol": "tcp",
       "containerPort": 80
     }],
     "command": null,
     "linuxParameters": null,
     "cpu": 0,
-    "environment": [{
-      "name": "NODE_ENV",
-      "value": "${var.app_config.NODE_ENV}"
-    }],
+    "environment": [{ "name": "NODE_ENV", "value": "${var.app_config.NODE_ENV}" }],
     "ulimits": null,
     "repositoryCredentials": null,
     "dnsServers": null,
@@ -50,7 +49,7 @@ resource "aws_ecs_task_definition" "app-definition" {
     "readonlyRootFilesystem": null,
     "dockerLabels": null,
     "privileged": null,
-    "name": "server"
+    "name": "todo-vue"
   }
 ]
 DEFINITION
@@ -64,7 +63,7 @@ resource "aws_ecs_service" "blackdevs_app_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.blackdevs-alb-tg.id
-    container_name   = "server"
+    container_name   = "todo-vue"
     container_port   = 80
   }
 
