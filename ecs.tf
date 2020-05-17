@@ -2,14 +2,6 @@ resource "aws_ecs_cluster" "app-cluster" {
   name = var.cluster_name
 }
 
-# data "template_file" "ecs-definition" {
-#   template = file("${path.module}/definition.json")
-
-#   vars {
-#     test = "${test}"
-#   }
-# }
-
 resource "aws_ecs_task_definition" "app-definition" {
   family                = "app-definition"
   # special role to execute ECS

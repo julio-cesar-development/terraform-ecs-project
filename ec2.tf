@@ -8,7 +8,7 @@ data "template_file" "user-data" {
 
 resource "aws_key_pair" "aws_keys" {
   key_name   = "aws_keys"
-  public_key = file(var.AWS_PUBLIC_KEY)
+  public_key = file(var.SSH_PUBLIC_KEY)
 }
 
 resource "aws_instance" "main-ec2-instance" {

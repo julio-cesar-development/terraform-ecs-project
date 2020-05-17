@@ -2,14 +2,14 @@
 
 * Instructions
 
-> Create a SSH key in the machine (recommended name: key_aws), add the private and public keys in this directory
+> Create a SSH key in the machine, add the private and public keys in this directory
 > Change the file terraform.tfvars.example to terraform.tfvars and add the correct variables of your configuration
 
 * Commands
 
 ```bash
 # log in SSH to EC2 machine
-ssh -i ${AWS_PRIVATE_KEY} ec2-user@$(terraform output ec2_instance_public_ip)
+ssh -i ${SSH_PRIVATE_KEY} ec2-user@$(terraform output ec2_instance_public_ip)
 
 # see logs of ECS agent on EC2 machine
 docker logs -f ecs-agent

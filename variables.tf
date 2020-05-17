@@ -32,16 +32,15 @@ variable "AWS_SECRET_KEY" {
   description = "AWS secret key"
 }
 
-variable "AWS_PRIVATE_KEY" {
+variable "SSH_PUBLIC_KEY" {
   type        = string
-  description = "AWS private key"
-  default     = "key_aws"
+  description = "SSH public key"
+  default     = "ssh_keys.pub"
 }
 
-variable "AWS_PUBLIC_KEY" {
+variable "AWS_ROOT_ZONE_ID" {
   type        = string
-  description = "AWS public key"
-  default     = "key_aws.pub"
+  description = "AWS route53 root zone id"
 }
 
 variable "app_config" {

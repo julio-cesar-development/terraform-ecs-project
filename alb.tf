@@ -2,7 +2,7 @@ resource "aws_lb" "blackdevs-alb" {
   load_balancer_type         = "application"
   name                       = "blackdevs-alb"
   internal                   = false
-  enable_deletion_protection = true
+  enable_deletion_protection = false
   idle_timeout               = 300
 
   subnets = aws_subnet.subnet-main.*.id
