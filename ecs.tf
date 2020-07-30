@@ -30,9 +30,5 @@ resource "aws_ecs_service" "blackdevs_app_service" {
     container_port   = 80
   }
 
-  depends_on = [aws_lb_listener.blackdevs_alb_listener_http]
-
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
+  depends_on = [aws_lb_listener.blackdevs_alb_listener_https]
 }

@@ -29,19 +29,6 @@ script:
     # shell linter
     docker container run --name shellcheck --rm -v "$PWD:/mnt" -w /mnt -it koalaman/shellcheck-alpine:stable shellcheck deploy*.sh
 
-    # copy terraform.tfvars from S3
-    docker container run \
-      --name awscli \
-      --rm -i \
-      -v "$PWD/:/data" \
-      -w /data \
-      --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
-      --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
-      --env AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
-      --entrypoint "" \
-      amazon/aws-cli:2.0.20 sh -c \
-      "aws s3 cp s3://blackdevs-aws/terraform/ecs-project/terraform.tfvars ./terraform.tfvars"
-
 after_success:
   - |
     if [ $TRAVIS_PULL_REQUEST != "false" ]; then
@@ -70,9 +57,9 @@ after_failure:
         cloudposse/github-commenter:latest
     fi
 
-# deploy:
-#   on:
-#     branch: master
-#   provider: script
-#   script: bash ./deploy-docker.sh
-#   skip_cleanup: true
+deploy:
+  on:
+    branch: master
+  provider: script
+  script: bash ./deploy-docker.sh
+  skip_cleanup: true
