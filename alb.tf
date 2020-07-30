@@ -35,10 +35,6 @@ resource "aws_lb_target_group" "blackdevs-alb-tg" {
     protocol            = "HTTP"
     port                = 80
   }
-
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
 }
 
 resource "aws_lb_listener" "blackdevs_alb_listener_http" {
