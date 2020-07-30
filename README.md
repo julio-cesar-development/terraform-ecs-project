@@ -9,7 +9,6 @@
 ## Instructions
 
 ```bash
-
 # fill your variables in this command
 cat <<EOF | tee terraform.tfvars
 aws_access_key      = ""
