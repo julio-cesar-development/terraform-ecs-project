@@ -1,14 +1,14 @@
 resource "aws_route53_zone" "app_zone" {
-  name = "${var.app_config.APP_SUBDOMAIN}.${var.app_config.APP_DOMAIN}."
+  name = "todoapp.onaws.${var.app_config.app_domain}"
 }
 
 # create a NS record in the root zone
-resource "aws_route53_record" "app_record_root_zone" {
+resource "aws_route53_record" "app_zone_record" {
   allow_overwrite = false
-  name            = "${var.app_config.APP_SUBDOMAIN}.${var.app_config.APP_DOMAIN}"
+  name            = "todoapp.onaws.${var.app_config.app_domain}"
   ttl             = 30
   type            = "NS"
-  zone_id         = var.AWS_ROOT_ZONE_ID
+  zone_id         = var.aws_hosted_zone_id
 
   records = [
     aws_route53_zone.app_zone.name_servers.0,
@@ -21,7 +21,7 @@ resource "aws_route53_record" "app_record_root_zone" {
 # create a NS record in the app zone
 resource "aws_route53_record" "app_record_app_zone" {
   allow_overwrite = true
-  name            = "${var.app_config.APP_SUBDOMAIN}.${var.app_config.APP_DOMAIN}."
+  name            = "todoapp.onaws.${var.app_config.app_domain}"
   ttl             = 30
   type            = "NS"
   zone_id         = aws_route53_zone.app_zone.zone_id
@@ -37,7 +37,7 @@ resource "aws_route53_record" "app_record_app_zone" {
 # create a record as alias pointing to load balancer
 resource "aws_route53_record" "main_lb_dns_record" {
   zone_id = aws_route53_zone.app_zone.zone_id
-  name    = "${var.app_config.APP_SUBDOMAIN}.${var.app_config.APP_DOMAIN}."
+  name    = "todoapp.onaws.${var.app_config.app_domain}"
   type    = "A"
 
   alias {

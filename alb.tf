@@ -5,9 +5,10 @@ resource "aws_lb" "blackdevs-alb" {
   enable_deletion_protection = false
   idle_timeout               = 300
 
-  subnets = aws_subnet.subnet-main.*.id
+  subnets         = aws_subnet.subnet-main.*.id
   security_groups = [aws_security_group.alb-sg.id]
 
+  # TODO: enable access logs
   # access_logs {
   #  bucket  = aws_s3_bucket.access_logs.bucket
   #  prefix  = "production"
@@ -40,10 +41,29 @@ resource "aws_lb_target_group" "blackdevs-alb-tg" {
   # }
 }
 
-resource "aws_lb_listener" "blackdevs_alb_listener" {
+resource "aws_lb_listener" "blackdevs_alb_listener_http" {
   load_balancer_arn = aws_lb.blackdevs-alb.arn
   port              = 80
   protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = 443
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "blackdevs_alb_listener_https" {
+  load_balancer_arn = aws_lb.blackdevs-alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+
+  # ARN for SSL certificate
+  certificate_arn = var.aws_certificate_arn
 
   default_action {
     target_group_arn = aws_lb_target_group.blackdevs-alb-tg.arn
@@ -51,8 +71,9 @@ resource "aws_lb_listener" "blackdevs_alb_listener" {
   }
 }
 
+
 resource "aws_lb_listener_rule" "blackdevs_alb_listener_rule" {
-  listener_arn = aws_lb_listener.blackdevs_alb_listener.arn
+  listener_arn = aws_lb_listener.blackdevs_alb_listener_https.arn
   priority     = 10
   depends_on   = [aws_lb_target_group.blackdevs-alb-tg]
 
@@ -70,6 +91,6 @@ resource "aws_lb_listener_rule" "blackdevs_alb_listener_rule" {
 
 resource "aws_alb_target_group_attachment" "instance_attachment" {
   target_group_arn = aws_lb_target_group.blackdevs-alb-tg.arn
-  target_id        = aws_instance.main-ec2-instance.id
+  target_id        = aws_instance.ec2-instance.id
   port             = 80
 }

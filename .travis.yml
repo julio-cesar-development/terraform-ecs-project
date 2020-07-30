@@ -1,0 +1,78 @@
+language: shell # minimal
+
+os:
+  - linux
+
+dist: bionic
+
+branches:
+  only:
+    - master
+    - development
+
+services:
+  - docker
+
+env:
+  # set environment
+  - SHA=$(git rev-parse --short HEAD) SHELLSHECK_VERSION=v0.4.7 TERRAFORM_VERSION=0.12.20 AWS_DEFAULT_REGION=sa-east-1
+
+
+script:
+  - |
+    # terraform linter
+    docker container run --name tflint --rm -v "$PWD:/data" -w /data --entrypoint "" -it wata727/tflint:0.14.0 tflint ./
+
+    # terraform security (TODO: fix this)
+    # docker container run --name tfsec --rm -v "$PWD:/workdir" -w /workdir -it wesleydeanflexion/tfsec:latest .
+
+    # shell linter
+    docker container run --name shellcheck --rm -v "$PWD:/mnt" -w /mnt -it koalaman/shellcheck-alpine:stable shellcheck deploy*.sh
+
+    # copy terraform.tfvars from S3
+    docker container run \
+      --name awscli \
+      --rm -i \
+      -v "$PWD/:/data" \
+      -w /data \
+      --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+      --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
+      --env AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
+      --entrypoint "" \
+      amazon/aws-cli:2.0.20 sh -c \
+      "aws s3 cp s3://blackdevs-aws/terraform/ecs-project/terraform.tfvars ./terraform.tfvars"
+
+after_success:
+  - |
+    if [ $TRAVIS_PULL_REQUEST != "false" ]; then
+      docker container run -i --rm \
+        --env GITHUB_TOKEN=$GITHUB_TOKEN \
+        --env GITHUB_OWNER=julio-cesar-development \
+        --env GITHUB_REPO=terraform-ecs-project \
+        --env GITHUB_COMMENT_TYPE=pr \
+        --env GITHUB_PR_ISSUE_NUMBER=$TRAVIS_PULL_REQUEST \
+        --env GITHUB_COMMENT_FORMAT="<b>Comment</b><br/>{{.}}" \
+        --env GITHUB_COMMENT="build of commit $SHA was successful, LGTM" \
+        cloudposse/github-commenter:latest
+    fi
+
+after_failure:
+  - |
+    if [ $TRAVIS_PULL_REQUEST != "false" ]; then
+      docker container run -i --rm \
+        --env GITHUB_TOKEN=$GITHUB_TOKEN \
+        --env GITHUB_OWNER=julio-cesar-development \
+        --env GITHUB_REPO=terraform-ecs-project \
+        --env GITHUB_COMMENT_TYPE=pr \
+        --env GITHUB_PR_ISSUE_NUMBER=$TRAVIS_PULL_REQUEST \
+        --env GITHUB_COMMENT_FORMAT="<b>Comment</b><br/>{{.}}" \
+        --env GITHUB_COMMENT="build of commit $SHA was not successful" \
+        cloudposse/github-commenter:latest
+    fi
+
+# deploy:
+#   on:
+#     branch: master
+#   provider: script
+#   script: bash ./deploy-docker.sh
+#   skip_cleanup: true

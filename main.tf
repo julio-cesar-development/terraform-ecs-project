@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket = "blackdevs-aws"
-    key    = "terraform/state.tfstate"
+    key    = "terraform/ecs-project/state.tfstate"
     region = "sa-east-1"
   }
 }

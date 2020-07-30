@@ -2,27 +2,22 @@ data "template_file" "user-data" {
   template = file("${path.module}/templates/user-data.sh")
 
   vars = {
-    ecs_cluster_name = var.cluster_name
+    ecs_cluster_name = var.ecs_cluster_name
   }
 }
 
-resource "aws_key_pair" "aws_keys" {
-  key_name   = "aws_keys"
-  public_key = file(var.SSH_PUBLIC_KEY)
-}
-
-resource "aws_instance" "main-ec2-instance" {
-  ami = var.AWS_AMI
+resource "aws_instance" "ec2-instance" {
+  ami = var.aws_ami
   # special profile to execute EC2 and ECS
-  iam_instance_profile = "AmazonEC2Role"
-  instance_type = "t2.micro"
-  user_data     = data.template_file.user-data.rendered
-  key_name      = aws_key_pair.aws_keys.key_name
+  iam_instance_profile = var.aws_iam_instance_profile
+  instance_type        = var.aws_instance_size
+  user_data            = data.template_file.user-data.rendered
+  key_name             = var.aws_key_name
 
   subnet_id              = aws_subnet.subnet-main[0].id
   vpc_security_group_ids = [aws_security_group.application-sg.id]
 
   tags = {
-    Name = "main-ec2-instance"
+    Name = "ec2-instance"
   }
 }

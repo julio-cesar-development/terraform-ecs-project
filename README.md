@@ -1,28 +1,33 @@
 # Terraform Project to provide infrastructure at AWS using ECS
 
-* Instructions
+> This is a project of Infrastructure as Code to provide an ECS service running on AWS, with a Load Balancer and HTTPS enabled
 
-> Create a SSH key in the machine, add the private and public keys in this directory
-> Change the file terraform.tfvars.example to terraform.tfvars and add the correct variables of your configuration
-
-* Commands
+## Instructions
 
 ```bash
-# log in SSH to EC2 machine
-ssh -i ${SSH_PRIVATE_KEY} ec2-user@$(terraform output ec2_instance_public_ip)
 
-# see logs of ECS agent on EC2 machine
-docker logs -f ecs-agent
+# fill your variables in this command
+cat <<EOF | tee terraform.tfvars
+aws_access_key      = ""
+aws_secret_key      = ""
+aws_hosted_zone_id  = ""
+aws_certificate_arn = ""
+aws_key_name        = ""
+aws_iam_instance_profile   = ""
+aws_arn_ecs_execution_role = ""
+app_config = {
+  app_version = ""
+  app_domain  = ""
+  node_env    = ""
+}
+EOF
 
-# get an AMI for ECS at some region
-aws ssm get-parameters --names /aws/service/ecs/optimized-ami/amazon-linux/recommended/image_id --region sa-east-1 --query "Parameters[0].Value"
-
-# run terraform
-terraform init
-terraform plan
-terraform apply -auto-approve
-
-# some docs
-https://aws.amazon.com/pt/premiumsupport/knowledge-center/launch-ecs-optimized-ami/
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
+# run deploy script
+chmod +x deploy.sh && \
+    bash deploy.sh
 ```
+
+## Docs
+
+[https://aws.amazon.com/pt/premiumsupport/knowledge-center/launch-ecs-optimized-ami/](https://aws.amazon.com/pt/premiumsupport/knowledge-center/launch-ecs-optimized-ami/)<br>
+[https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html)<br>
