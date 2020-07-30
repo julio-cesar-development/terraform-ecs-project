@@ -1,5 +1,9 @@
 # Terraform Project to provide infrastructure at AWS using ECS
 
+[![Build Status](https://travis-ci.org/julio-cesar-development/terraform-ecs-project.svg)](https://travis-ci.org/julio-cesar-development/terraform-ecs-project)
+[![GitHub Status](https://badgen.net/github/status/julio-cesar-development/terraform-ecs-project)](https://github.com/julio-cesar-development/terraform-ecs-project)
+![License](https://badgen.net/badge/license/MIT/blue)
+
 > This is a project of Infrastructure as Code to provide an ECS service running on AWS, with a Load Balancer and HTTPS enabled
 
 ## Instructions
