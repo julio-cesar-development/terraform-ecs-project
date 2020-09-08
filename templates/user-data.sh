@@ -5,5 +5,5 @@ echo "NO_PROXY=169.254.169.254,169.254.170.2,/var/run/docker.sock" >> /etc/ecs/e
 
 # sudo /usr/libexec/amazon-ecs-init start
 
-# cat /var/log/ecs/ecs-agent.log
-# cat /var/log/ecs/ecs-init.log
+# tail -f /var/log/ecs/ecs-agent.log
+# tail -f /var/log/ecs/ecs-init.log

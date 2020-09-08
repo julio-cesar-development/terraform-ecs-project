@@ -36,7 +36,7 @@ variable "aws_public_cidr" {
 variable "aws_ami" {
   type        = string
   description = "AWS image AMI optimized for ECS"
-  default     = "ami-0d6ac368fff49ff2d"
+  default     = ""
 }
 
 variable "aws_instance_size" {

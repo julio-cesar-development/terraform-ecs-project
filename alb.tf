@@ -5,7 +5,7 @@ resource "aws_lb" "blackdevs-alb" {
   enable_deletion_protection = false
   idle_timeout               = 300
 
-  subnets         = aws_subnet.subnet-main.*.id
+  subnets         = aws_subnet.main-subnets.*.id
   security_groups = [aws_security_group.alb-sg.id]
 
   # TODO: enable access logs
@@ -18,13 +18,20 @@ resource "aws_lb" "blackdevs-alb" {
   tags = {
     Name = "blackdevs-alb"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-resource "aws_lb_target_group" "blackdevs-alb-tg" {
-  name     = "blackdevs-alb-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main-vpc.id
+resource "aws_alb_target_group" "blackdevs-alb-tg" {
+  name                          = "blackdevs-alb-tg"
+  port                          = 80
+  protocol                      = "HTTP"
+  vpc_id                        = aws_vpc.main-vpc.id
+  load_balancing_algorithm_type = "least_outstanding_requests"
+
+  target_type = "ip"
 
   health_check {
     healthy_threshold   = 3
@@ -35,9 +42,13 @@ resource "aws_lb_target_group" "blackdevs-alb-tg" {
     protocol            = "HTTP"
     port                = 80
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-resource "aws_lb_listener" "blackdevs_alb_listener_http" {
+resource "aws_alb_listener" "blackdevs_alb_listener_http" {
   load_balancer_arn = aws_lb.blackdevs-alb.arn
   port              = 80
   protocol          = "HTTP"
@@ -53,7 +64,7 @@ resource "aws_lb_listener" "blackdevs_alb_listener_http" {
   }
 }
 
-resource "aws_lb_listener" "blackdevs_alb_listener_https" {
+resource "aws_alb_listener" "blackdevs_alb_listener_https" {
   load_balancer_arn = aws_lb.blackdevs-alb.arn
   port              = 443
   protocol          = "HTTPS"
@@ -62,20 +73,19 @@ resource "aws_lb_listener" "blackdevs_alb_listener_https" {
   certificate_arn = var.aws_certificate_arn
 
   default_action {
-    target_group_arn = aws_lb_target_group.blackdevs-alb-tg.arn
+    target_group_arn = aws_alb_target_group.blackdevs-alb-tg.arn
     type             = "forward"
   }
 }
 
-
-resource "aws_lb_listener_rule" "blackdevs_alb_listener_rule" {
-  listener_arn = aws_lb_listener.blackdevs_alb_listener_https.arn
+resource "aws_alb_listener_rule" "blackdevs_alb_listener_rule" {
+  listener_arn = aws_alb_listener.blackdevs_alb_listener_https.arn
   priority     = 10
-  depends_on   = [aws_lb_target_group.blackdevs-alb-tg]
+  depends_on   = [aws_alb_target_group.blackdevs-alb-tg]
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.blackdevs-alb-tg.id
+    target_group_arn = aws_alb_target_group.blackdevs-alb-tg.id
   }
 
   condition {
@@ -83,10 +93,4 @@ resource "aws_lb_listener_rule" "blackdevs_alb_listener_rule" {
       values = ["/*"]
     }
   }
-}
-
-resource "aws_alb_target_group_attachment" "instance_attachment" {
-  target_group_arn = aws_lb_target_group.blackdevs-alb-tg.arn
-  target_id        = aws_instance.ec2-instance.id
-  port             = 80
 }

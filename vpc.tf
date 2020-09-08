@@ -10,12 +10,16 @@ resource "aws_vpc" "main-vpc" {
   }
 }
 
-resource "aws_subnet" "subnet-main" {
+resource "aws_subnet" "main-subnets" {
   count                   = var.aws_az_count
   cidr_block              = cidrsubnet(aws_vpc.main-vpc.cidr_block, 8, count.index) # 10.0.0.0/24, 10.0.1.0/24, ...
   map_public_ip_on_launch = "true"
   availability_zone       = var.aws_az_names[count.index]
   vpc_id                  = aws_vpc.main-vpc.id
+
+  tags = {
+    Name = "main-subnets-${count.index}"
+  }
 }
 
 resource "aws_internet_gateway" "main-gw" {
@@ -37,6 +41,6 @@ resource "aws_route_table" "route-main" {
 
 resource "aws_route_table_association" "assoc-table-main" {
   count          = var.aws_az_count
-  subnet_id      = element(aws_subnet.subnet-main.*.id, count.index)
+  subnet_id      = element(aws_subnet.main-subnets.*.id, count.index)
   route_table_id = aws_route_table.route-main.id
 }

@@ -29,9 +29,9 @@ resource "aws_security_group" "alb-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # lifecycle {
-  #   create_before_destroy = true
-  # }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_security_group" "application-sg" {
@@ -49,13 +49,13 @@ resource "aws_security_group" "application-sg" {
   }
 
   # inbound rules
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+  # ingress {
+  #   from_port = 22
+  #   to_port   = 22
+  #   protocol  = "tcp"
 
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   ingress {
     from_port = 0
@@ -65,7 +65,7 @@ resource "aws_security_group" "application-sg" {
     security_groups = [aws_security_group.alb-sg.id]
   }
 
-  # lifecycle {
-  #   create_before_destroy = true
-  # }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
