@@ -15,57 +15,23 @@ variable "aws_region" {
   default     = "sa-east-1"
 }
 
-variable "aws_az_count" {
-  type        = number
-  description = "AWS availability zones count"
-  default     = 2
-}
-
-variable "aws_az_names" {
+variable "aws_azs" {
   type        = list(string)
-  description = "Name of zones to be available"
-  default     = ["sa-east-1a", "sa-east-1c"]
+  description = "AZs to be available"
+  default     = ["a", "b", "c"]
 }
 
-variable "aws_public_cidr" {
+variable "root_domain" {
   type        = string
-  description = "AWS public subnet CIDR block"
-  default     = "10.0.0.0/16"
+  description = "The root domain on AWS"
 }
 
-variable "aws_ami" {
+variable "certificate_arn" {
   type        = string
-  description = "AWS image AMI optimized for ECS"
-  default     = ""
+  description = "The certificate ARN on AWS"
 }
 
-variable "aws_instance_size" {
-  type        = string
-  description = "AWS instance size for EC2"
-  default     = "t2.micro"
-}
-
-variable "aws_hosted_zone_id" {
-  type        = string
-  description = "AWS hosted zone ID"
-}
-
-variable "aws_certificate_arn" {
-  type        = string
-  description = "AWS certificate ARN"
-}
-
-variable "aws_key_name" {
-  type        = string
-  description = "AWS SSH key name"
-}
-
-variable "aws_iam_instance_profile" {
-  type        = string
-  description = "AWS profile to execute EC2"
-}
-
-variable "aws_arn_ecs_execution_role" {
+variable "ecs_execution_role_arn" {
   type        = string
   description = "AWS ARN of ECS execution role"
 }
@@ -73,13 +39,29 @@ variable "aws_arn_ecs_execution_role" {
 variable "ecs_cluster_name" {
   type        = string
   description = "ECS cluster name"
-  default     = "app-cluster"
+  default     = "application-cluster"
 }
 
-variable "app_config" {
-  type = object({
-    app_version = string
-    app_domain  = string
-    node_env    = string
-  })
+variable "ecs_application_image_repository" {
+  type        = string
+  description = "ECS application image repository"
+  default     = "juliocesarmidia/todo-vue"
+}
+
+variable "ecs_application_image_tag" {
+  type        = string
+  description = "ECS application image tag"
+  default     = "latest"
+}
+
+variable "ecs_application_name" {
+  type        = string
+  description = "ECS application name"
+  default     = "todovue"
+}
+
+variable "env" {
+  type        = string
+  description = "Environment for deploy"
+  default     = "development"
 }

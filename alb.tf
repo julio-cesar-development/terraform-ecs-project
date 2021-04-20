@@ -1,12 +1,12 @@
-resource "aws_lb" "blackdevs-alb" {
+resource "aws_lb" "application-lb" {
   load_balancer_type         = "application"
-  name                       = "blackdevs-alb"
+  name                       = "application-lb"
   internal                   = false
   enable_deletion_protection = false
   idle_timeout               = 300
 
-  subnets         = aws_subnet.main-subnets.*.id
-  security_groups = [aws_security_group.alb-sg.id]
+  subnets         = aws_subnet.public_subnet.*.id
+  security_groups = [aws_security_group.lb-sg.id]
 
   # TODO: enable access logs
   # access_logs {
@@ -16,7 +16,7 @@ resource "aws_lb" "blackdevs-alb" {
   # }
 
   tags = {
-    Name = "blackdevs-alb"
+    Name = "application-lb"
   }
 
   lifecycle {
@@ -24,11 +24,11 @@ resource "aws_lb" "blackdevs-alb" {
   }
 }
 
-resource "aws_alb_target_group" "blackdevs-alb-tg" {
-  name                          = "blackdevs-alb-tg"
+resource "aws_alb_target_group" "application-lb-tg" {
+  name                          = "application-lb-tg"
   port                          = 80
   protocol                      = "HTTP"
-  vpc_id                        = aws_vpc.main-vpc.id
+  vpc_id                        = aws_vpc.vpc_0.id
   load_balancing_algorithm_type = "least_outstanding_requests"
 
   target_type = "ip"
@@ -48,8 +48,8 @@ resource "aws_alb_target_group" "blackdevs-alb-tg" {
   }
 }
 
-resource "aws_alb_listener" "blackdevs_alb_listener_http" {
-  load_balancer_arn = aws_lb.blackdevs-alb.arn
+resource "aws_alb_listener" "lb-listener-http" {
+  load_balancer_arn = aws_lb.application-lb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -64,28 +64,28 @@ resource "aws_alb_listener" "blackdevs_alb_listener_http" {
   }
 }
 
-resource "aws_alb_listener" "blackdevs_alb_listener_https" {
-  load_balancer_arn = aws_lb.blackdevs-alb.arn
+resource "aws_alb_listener" "lb-listener-https" {
+  load_balancer_arn = aws_lb.application-lb.arn
   port              = 443
   protocol          = "HTTPS"
 
   # ARN for SSL certificate
-  certificate_arn = var.aws_certificate_arn
+  certificate_arn = var.certificate_arn
 
   default_action {
-    target_group_arn = aws_alb_target_group.blackdevs-alb-tg.arn
+    target_group_arn = aws_alb_target_group.application-lb-tg.arn
     type             = "forward"
   }
 }
 
-resource "aws_alb_listener_rule" "blackdevs_alb_listener_rule" {
-  listener_arn = aws_alb_listener.blackdevs_alb_listener_https.arn
-  priority     = 10
-  depends_on   = [aws_alb_target_group.blackdevs-alb-tg]
+resource "aws_alb_listener_rule" "lb-listener-rule" {
+  listener_arn = aws_alb_listener.lb-listener-https.arn
+  priority     = 100
+  depends_on   = [aws_alb_target_group.application-lb-tg]
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.blackdevs-alb-tg.id
+    target_group_arn = aws_alb_target_group.application-lb-tg.id
   }
 
   condition {

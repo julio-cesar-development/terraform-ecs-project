@@ -1,12 +1,12 @@
 resource "aws_appautoscaling_target" "ecs-target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.ecs-cluster.name}/${aws_ecs_service.client-service.name}"
+  resource_id        = "service/${aws_ecs_cluster.ecs-cluster.name}/${aws_ecs_service.service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
 
   min_capacity = 1
   max_capacity = 3
 
-  depends_on = [aws_ecs_cluster.ecs-cluster, aws_ecs_service.client-service, aws_alb_target_group.blackdevs-alb-tg]
+  depends_on = [aws_ecs_cluster.ecs-cluster, aws_ecs_service.service, aws_alb_target_group.application-lb-tg]
 }
 
 resource "aws_appautoscaling_policy" "ecs-policy-scale-up" {

@@ -1,34 +1,18 @@
 # Terraform Project to provide infrastructure at AWS using ECS
 
-[![Build Status](https://travis-ci.org/julio-cesar-development/terraform-ecs-project.svg)](https://travis-ci.org/julio-cesar-development/terraform-ecs-project)
-[![GitHub Status](https://badgen.net/github/status/julio-cesar-development/terraform-ecs-project)](https://github.com/julio-cesar-development/terraform-ecs-project)
+[![Build Status](https://travis-ci.com/juliocesarscheidt/terraform-ecs-project.svg)](https://travis-ci.com/juliocesarscheidt/terraform-ecs-project)
+[![GitHub Status](https://badgen.net/github/status/juliocesarscheidt/terraform-ecs-project)](https://github.com/juliocesarscheidt/terraform-ecs-project)
 ![License](https://badgen.net/badge/license/MIT/blue)
 
-> This is a project of Infrastructure as Code to provide an ECS service running on AWS<br>
+> This is a project of Infrastructure as Code to provide an ECS service running on AWS
 > It will provide fargate instances running as ECS services, with autoscaling and service discovery
 
 ## Instructions
 
 ```bash
-# fill your variables in this command
-cat <<EOF | tee terraform.tfvars
-aws_access_key      = ""
-aws_secret_key      = ""
-aws_hosted_zone_id  = ""
-aws_certificate_arn = ""
-aws_key_name        = ""
-aws_iam_instance_profile   = ""
-aws_arn_ecs_execution_role = ""
-app_config = {
-  app_version = ""
-  app_domain  = ""
-  node_env    = ""
-}
-EOF
-
 # run deploy script
 chmod +x deploy.sh && \
-    bash deploy.sh
+  bash deploy.sh
 ```
 
 ## Docs

@@ -23,7 +23,7 @@
     "memory": 1024,
     "memoryReservation": 128,
     "volumesFrom": [],
-    "image": "juliocesarmidia/todo-vue:${APP_VERSION}",
+    "image": "${APPLICATION_IMAGE_REPOSITORY}:${APPLICATION_IMAGE_TAG}",
     "disableNetworking": null,
     "healthCheck": null,
     "essential": true,
@@ -34,6 +34,6 @@
     "readonlyRootFilesystem": null,
     "dockerLabels": null,
     "privileged": null,
-    "name": "todoapp"
+    "name": "${APPLICATION_NAME}"
   }
 ]

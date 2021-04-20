@@ -17,7 +17,6 @@ env:
   # set environment
   - SHA=$(git rev-parse --short HEAD) SHELLSHECK_VERSION=v0.4.7 TERRAFORM_VERSION=0.12.20 AWS_DEFAULT_REGION=sa-east-1
 
-
 script:
   - |
     # terraform linter
@@ -34,7 +33,7 @@ after_success:
     if [ $TRAVIS_PULL_REQUEST != "false" ]; then
       docker container run -i --rm \
         --env GITHUB_TOKEN=$GITHUB_TOKEN \
-        --env GITHUB_OWNER=julio-cesar-development \
+        --env GITHUB_OWNER=juliocesarscheidt \
         --env GITHUB_REPO=terraform-ecs-project \
         --env GITHUB_COMMENT_TYPE=pr \
         --env GITHUB_PR_ISSUE_NUMBER=$TRAVIS_PULL_REQUEST \
@@ -48,7 +47,7 @@ after_failure:
     if [ $TRAVIS_PULL_REQUEST != "false" ]; then
       docker container run -i --rm \
         --env GITHUB_TOKEN=$GITHUB_TOKEN \
-        --env GITHUB_OWNER=julio-cesar-development \
+        --env GITHUB_OWNER=juliocesarscheidt \
         --env GITHUB_REPO=terraform-ecs-project \
         --env GITHUB_COMMENT_TYPE=pr \
         --env GITHUB_PR_ISSUE_NUMBER=$TRAVIS_PULL_REQUEST \
@@ -61,5 +60,5 @@ deploy:
   on:
     branch: master
   provider: script
-  script: bash ./deploy-docker.sh
+  script: bash ./deploy.sh
   skip_cleanup: true
