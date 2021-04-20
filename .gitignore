@@ -1,4 +1,4 @@
 .terraform
 *.tfstate*
 *.tfvars
-ssh_keys*
+run.sh
