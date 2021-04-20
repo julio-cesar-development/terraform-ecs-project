@@ -46,8 +46,8 @@ terraform validate
 terraform plan -var-file="${WORKSPACE}.tfvars" \
   -detailed-exitcode -input=false
 
-# terraform apply -var-file="${WORKSPACE}.tfvars" \
-#   -auto-approve
+terraform apply -var-file="${WORKSPACE}.tfvars" \
+  -auto-approve
 EOF
 ) | docker container run --rm -i \
   --name terraform \
