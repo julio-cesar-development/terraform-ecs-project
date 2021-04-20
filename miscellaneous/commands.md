@@ -62,27 +62,27 @@ terraform fmt -write=true -recursive
 
 terraform init -backend=true
 
-TF_WORKSPACE="development"
-terraform workspace new "${TF_WORKSPACE}" \
-  || terraform workspace select "${TF_WORKSPACE}"
+WORKSPACE="development"
+terraform workspace new "${WORKSPACE}" 2> /dev/null \
+  || terraform workspace select "${WORKSPACE}"
 
 terraform workspace list
 terraform workspace show
 
 terraform validate
 
-terraform plan -var-file="$TF_WORKSPACE.tfvars" -detailed-exitcode -input=false
+terraform plan -var-file="$WORKSPACE.tfvars" -detailed-exitcode -input=false
 
-terraform plan -var-file="$TF_WORKSPACE.tfvars" -detailed-exitcode -input=false -target=resource
+terraform plan -var-file="$WORKSPACE.tfvars" -detailed-exitcode -input=false -target=resource
 
-terraform refresh -var-file="$TF_WORKSPACE.tfvars"
+terraform refresh -var-file="$WORKSPACE.tfvars"
 
-terraform show -var-file="$TF_WORKSPACE.tfvars"
+terraform show
 
-terraform output -var-file="$TF_WORKSPACE.tfvars"
+terraform output -var-file="$WORKSPACE.tfvars"
 
-terraform apply -var-file="$TF_WORKSPACE.tfvars" -auto-approve
-terraform apply -var-file="$TF_WORKSPACE.tfvars" -auto-approve -target=resource
+terraform apply -var-file="$WORKSPACE.tfvars" -auto-approve
+terraform apply -var-file="$WORKSPACE.tfvars" -auto-approve -target=resource
 
-terraform destroy -var-file="$TF_WORKSPACE.tfvars" -auto-approve
+terraform destroy -var-file="$WORKSPACE.tfvars" -auto-approve
 ```
