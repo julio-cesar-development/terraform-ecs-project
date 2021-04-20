@@ -8,7 +8,6 @@ else
   export TF_WORKSPACE='development'
 fi
 
-export TF_WORKSPACE=${TF_WORKSPACE:?'[ERROR] Variable TF_WORKSPACE missing'}
 export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?'[ERROR] Variable AWS_ACCESS_KEY_ID missing'}
 export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?'[ERROR] Variable AWS_SECRET_ACCESS_KEY missing'}
 export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:?'[ERROR] Variable AWS_DEFAULT_REGION missing'}
