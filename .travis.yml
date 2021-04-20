@@ -20,13 +20,13 @@ env:
 script:
   - |
     # terraform linter
-    docker container run --name tflint --rm -v "$PWD:/data" -w /data --entrypoint "" -it wata727/tflint:0.14.0 tflint ./
+    docker container run --name tflint --rm -v "$PWD/terraform/:/data" -w /data --entrypoint "" -it wata727/tflint:0.14.0 tflint ./
 
     # terraform security (TODO: fix this)
-    # docker container run --name tfsec --rm -v "$PWD:/workdir" -w /workdir -it wesleydeanflexion/tfsec:latest .
+    # docker container run --name tfsec --rm -v "$PWD/terraform/:/workdir" -w /workdir -it wesleydeanflexion/tfsec:latest .
 
     # shell linter
-    docker container run --name shellcheck --rm -v "$PWD:/mnt" -w /mnt -it koalaman/shellcheck-alpine:stable shellcheck deploy*.sh
+    docker container run --name shellcheck --rm -v "$PWD/:/mnt" -w /mnt -it koalaman/shellcheck-alpine:stable shellcheck deploy*.sh
 
 after_success:
   - |
