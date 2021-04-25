@@ -4,7 +4,7 @@ resource "aws_nat_gateway" "nat_gw" {
   subnet_id     = aws_subnet.public_subnet[count.index].id
 
   tags = {
-    Name = "nat_gw"
+    Name = "nat_gw_${var.env}"
   }
 
   depends_on = [aws_subnet.public_subnet]

@@ -1,19 +1,12 @@
 resource "aws_lb" "application-lb" {
   load_balancer_type         = "application"
-  name                       = "application-lb"
+  name                       = "application-lb-${var.env}"
   internal                   = false
   enable_deletion_protection = false
   idle_timeout               = 300
 
   subnets         = aws_subnet.public_subnet.*.id
   security_groups = [aws_security_group.lb-sg.id]
-
-  # TODO: enable access logs
-  # access_logs {
-  #  bucket  = aws_s3_bucket.access_logs.bucket
-  #  prefix  = "production"
-  #  enabled = true
-  # }
 
   tags = {
     Name = "application-lb"
@@ -25,7 +18,7 @@ resource "aws_lb" "application-lb" {
 }
 
 resource "aws_alb_target_group" "application-lb-tg" {
-  name                          = "application-lb-tg"
+  name                          = "application-lb-tg-${var.env}"
   port                          = 80
   protocol                      = "HTTP"
   vpc_id                        = aws_vpc.vpc_0.id

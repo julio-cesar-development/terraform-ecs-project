@@ -9,7 +9,7 @@ resource "aws_subnet" "public_subnet" {
   vpc_id = aws_vpc.vpc_0.id
 
   tags = {
-    Name = "public_subnet_${count.index}"
+    Name = "public_subnet_${count.index}_${var.env}"
   }
 
   depends_on = [aws_vpc.vpc_0]
@@ -24,7 +24,7 @@ resource "aws_route_table" "public_route" {
   }
 
   tags = {
-    Name = "public_route"
+    Name = "public_route_${var.env}"
   }
 
   depends_on = [aws_internet_gateway.internet_gw]
@@ -58,7 +58,7 @@ resource "aws_subnet" "private_subnet" {
   vpc_id = aws_vpc.vpc_0.id
 
   tags = {
-    Name = "private_subnet_${count.index}"
+    Name = "private_subnet_${count.index}_${var.env}"
   }
 
   depends_on = [aws_vpc.vpc_0]
@@ -74,7 +74,7 @@ resource "aws_route_table" "private_route" {
   }
 
   tags = {
-    Name = "private_route"
+    Name = "private_route_${var.env}"
   }
 
   depends_on = [aws_nat_gateway.nat_gw]

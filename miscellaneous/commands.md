@@ -85,6 +85,7 @@ terraform output -var-file="$WORKSPACE.tfvars"
 
 terraform apply -var-file="$WORKSPACE.tfvars" \
   -auto-approve
+
 terraform apply -var-file="$WORKSPACE.tfvars" \
   -auto-approve -target=resource
 

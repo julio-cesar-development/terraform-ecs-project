@@ -1,7 +1,7 @@
 resource "aws_security_group" "lb-sg" {
   description = "security group that allows specific ports and traffic to load balancer"
   vpc_id      = aws_vpc.vpc_0.id
-  name        = "lb-sg"
+  name        = "lb-sg-${var.env}"
 
   # outbound rules
   egress {
@@ -34,7 +34,7 @@ resource "aws_security_group" "lb-sg" {
 resource "aws_security_group" "application-sg" {
   description = "security group that allows specific ports and traffic to application"
   vpc_id      = aws_vpc.vpc_0.id
-  name        = "application-sg"
+  name        = "application-sg-${var.env}"
 
   # outbound rules
   egress {
