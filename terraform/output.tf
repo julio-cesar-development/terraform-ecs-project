@@ -1,5 +1,5 @@
 output "eip" {
-  value = aws_eip.nat_eip
+  value = aws_eip.nat_eip.*
 }
 
 output "lb_dns_name" {
