@@ -14,7 +14,7 @@ data "template_file" "definition-template" {
 }
 
 resource "aws_ecs_task_definition" "task-definition" {
-  family = "task-definition"
+  family = "task-definition-${var.env}"
   # special role to execute ECS
   execution_role_arn    = var.ecs_execution_role_arn
   container_definitions = data.template_file.definition-template.rendered
@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "task-definition" {
 }
 
 resource "aws_ecs_service" "service" {
-  name                = "service"
+  name                = "service-${var.env}"
   cluster             = aws_ecs_cluster.ecs-cluster.name
   task_definition     = aws_ecs_task_definition.task-definition.arn
   scheduling_strategy = "REPLICA"
@@ -73,7 +73,7 @@ resource "aws_service_discovery_private_dns_namespace" "private-dns-namespace" {
 }
 
 resource "aws_service_discovery_service" "service-discovery" {
-  name = "service-discovery"
+  name = "service-discovery-${var.env}"
 
   dns_config {
     namespace_id = aws_service_discovery_private_dns_namespace.private-dns-namespace.id
