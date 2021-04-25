@@ -8,7 +8,7 @@ data "aws_route53_zone" "root_zone" {
 resource "aws_route53_record" "alb_record" {
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.root_zone.zone_id
-  name            = "todoapp.onaws.${var.root_domain}"
+  name            = "ecs.${var.root_domain}"
   type            = "A"
 
   alias {
@@ -23,11 +23,11 @@ resource "aws_route53_record" "alb_record" {
 resource "aws_route53_record" "alb_record_www" {
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.root_zone.zone_id
-  name            = "www.todoapp.onaws.${var.root_domain}"
+  name            = "www.ecs.${var.root_domain}"
   type            = "CNAME"
-  ttl             = 5
+  ttl             = 60
 
-  records = ["todoapp.onaws.${var.root_domain}"]
+  records = ["ecs.${var.root_domain}"]
 
   depends_on = [data.aws_route53_zone.root_zone]
 }

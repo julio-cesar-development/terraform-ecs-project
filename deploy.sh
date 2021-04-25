@@ -9,7 +9,7 @@ export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:?'[ERROR] Variable AWS_DEFAULT_RE
 GIT_BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
 BRANCH_NAME="${TRAVIS_BRANCH:-$GIT_BRANCH_NAME}"
 
-if [ "$BRANCH_NAME" = 'master' ]; then
+if [ "$BRANCH_NAME" = 'master' ] || [ "$BRANCH_NAME" = 'main' ]; then
   export WORKSPACE='production'
 else
   export WORKSPACE='development'
@@ -58,4 +58,4 @@ EOF
   --env AWS_DEFAULT_REGION \
   --env WORKSPACE \
   --entrypoint "" \
-  hashicorp/terraform:0.12.26 sh -c "cat - 1>> run.sh && chmod +x run.sh && sh run.sh"
+  hashicorp/terraform:0.12.26 sh -c "cat - 1> run.sh && chmod +x run.sh && sh run.sh"
